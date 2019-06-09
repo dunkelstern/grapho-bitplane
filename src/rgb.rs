@@ -1,6 +1,6 @@
-///! This module describes an interleaved RGB pixel buffer
-///!
-///! In memory representation is (one byte each): R, G, B, R, G, B, ...
+//! This module describes an interleaved RGB pixel buffer
+//!
+//! In memory representation is (one byte each): R, G, B, R, G, B, ...
 
 use crate::*;
 pub use grapho_color::DigitalRGBColor;

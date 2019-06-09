@@ -1,3 +1,14 @@
+//! `grapho-bitplane` describes the pixel buffer primitives that are used for creating and modifying images.
+//! It will contain color conversion functionality and can work on arbitrary interleaved or non-interleaved
+//! graphics data.
+//! 
+//! Currently the following bitplane types are implemented:
+//! 
+//! - `RGB` interleaved with stride
+//! 
+//! Conversion from all color-plane types into all others will be implemented.
+
+
 #![feature(repeat_generic_slice)]
 #![feature(doc_spotlight)]
 
