@@ -1,0 +1,10 @@
+[package]
+name = "grapho-bitplane"
+version = "0.1.0"
+authors = ["Johannes Schriewer <hallo@dunkelstern.de>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+grapho-color = { git = 'https://github.com/dunkelstern/grapho-color' }
