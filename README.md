@@ -20,16 +20,13 @@ graphics data.
 Currently the following bitplane types are implemented:
 
 - `RGB` interleaved with stride
+- `BGR` interleaved with stride
+- `RGBA` interleaved with stride
+- `BGRA` interleaved with stride
 
 Conversion from all color-plane types into all others will be implemented.
 
 ## TODO
-
-### RGB
-
-- `BGR` interleaved with stride
-- `RGBA` interleaved with stride
-- `BGRA` interleaved with stride
 
 ### YCbCr/YUV
 

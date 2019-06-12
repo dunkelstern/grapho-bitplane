@@ -5,6 +5,9 @@
 //! Currently the following bitplane types are implemented:
 //! 
 //! - `RGB` interleaved with stride
+//! - `BGR` interleaved with stride
+//! - `RGBA` interleaved with stride
+//! - `BGRA` interleaved with stride
 //! 
 //! Conversion from all color-plane types into all others will be implemented.
 
@@ -121,6 +124,12 @@ pub trait PixelBuffer: Sized + IntoIterator
     /// A `Result`, either a `ColorType` if everything went ok, or
     /// `PixelBufferError::RequestOutOfBounds` if the request was out of bounds
     fn get_pixel(&self, x: usize, y: usize) -> Result<Self::ColorType, PixelBufferError>;
+
 }
 
 pub mod rgb;
+pub mod rgba;
+pub mod bgr;
+pub mod bgra;
+
+pub mod conversion;

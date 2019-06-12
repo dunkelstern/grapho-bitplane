@@ -15,54 +15,6 @@ pub struct RGBPixelBuffer {
     data: Vec<u8>
 }
 
-/// Pixel iterator for `RGBPixelBuffer`
-/// 
-/// Items it will generate are of type `Pixel<DigitalRGBColor>`
-#[derive(Debug, PartialEq)]
-pub struct RGBPixelIterator {
-    base: RGBPixelBuffer,
-    x: usize,
-    y: usize
-}
-
-impl Iterator for RGBPixelIterator {
-    type Item = Pixel<DigitalRGBColor>;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        if self.y >= self.base.height {
-            return None;
-        }
-
-        let start = self.x * 3 + self.y * self.base.stride;
-        let slice = &self.base.data[start..start+3];
-        let item = DigitalRGBColor::try_from(slice).unwrap();
-        self.x += 1;
-        if self.x >= self.base.width {
-            self.x = 0;
-            self.y += 1;
-        }
-
-        Some((self.x, self.y, item))
-    }
-
-    fn count(self) -> usize {
-        self.base.width * self.base.height
-    }
-}
-
-impl IntoIterator for RGBPixelBuffer {
-    type Item = Pixel<DigitalRGBColor>;
-    type IntoIter = RGBPixelIterator;
-
-    fn into_iter(self) -> Self::IntoIter {
-        RGBPixelIterator {
-            base: self,
-            x: 0,
-            y: 0
-        }
-    }
-}
-
 impl PixelBuffer for RGBPixelBuffer {
     type ColorType = DigitalRGBColor;
 
@@ -153,6 +105,8 @@ impl PixelBuffer for RGBPixelBuffer {
     }
 }
 
+pub mod iter;
+
 //
 // Tests
 //
@@ -160,6 +114,7 @@ impl PixelBuffer for RGBPixelBuffer {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use grapho_color::DigitalRGBAColor;
 
     #[test]
     fn empty_rgb_buffer() {
@@ -179,20 +134,12 @@ mod tests {
     #[test]
     fn prefilled_rgb_buffer() {
         let data = vec![0, 255, 64, 0, 255, 64, 0, 255, 64, 0, 255, 64];
+        let copy = data.clone();
         let buffer = RGBPixelBuffer::new_with_data(2, 2, None, data).unwrap();
         assert_eq!(buffer.data.len(), 12);
-        assert_eq!(buffer.data[0], 0);
-        assert_eq!(buffer.data[1], 255);
-        assert_eq!(buffer.data[2], 64);
-        assert_eq!(buffer.data[3], 0);
-        assert_eq!(buffer.data[4], 255);
-        assert_eq!(buffer.data[5], 64);
-        assert_eq!(buffer.data[6], 0);
-        assert_eq!(buffer.data[7], 255);
-        assert_eq!(buffer.data[8], 64);
-        assert_eq!(buffer.data[9], 0);
-        assert_eq!(buffer.data[10], 255);
-        assert_eq!(buffer.data[11], 64);
+        for x in 0..buffer.data.len() {
+            assert_eq!(copy[x], buffer.data[x]);
+        }
     }
 
     #[test]
@@ -202,18 +149,11 @@ mod tests {
             DigitalRGBColor{ r: 255, g: 64, b: 0 }
         );
         assert_eq!(buffer.data.len(), 12);
-        assert_eq!(buffer.data[0], 255);
-        assert_eq!(buffer.data[1], 64);
-        assert_eq!(buffer.data[2], 0);
-        assert_eq!(buffer.data[3], 255);
-        assert_eq!(buffer.data[4], 64);
-        assert_eq!(buffer.data[5], 0);
-        assert_eq!(buffer.data[6], 255);
-        assert_eq!(buffer.data[7], 64);
-        assert_eq!(buffer.data[8], 0);
-        assert_eq!(buffer.data[9], 255);
-        assert_eq!(buffer.data[10], 64);
-        assert_eq!(buffer.data[11], 0);
+        for x in (0..12).step_by(3) {
+            assert_eq!(buffer.data[x + 0], 255);
+            assert_eq!(buffer.data[x + 1], 64);
+            assert_eq!(buffer.data[x + 2], 0);
+        }
     }
     
     #[test]
@@ -224,42 +164,15 @@ mod tests {
         );
 
         assert_eq!(buffer.data.len(), 24);
-        assert_eq!(buffer.data[0], 255);
-        assert_eq!(buffer.data[1], 64);
-        assert_eq!(buffer.data[2], 0);
-        assert_eq!(buffer.data[3], 255);
-        assert_eq!(buffer.data[4], 64);
-        assert_eq!(buffer.data[5], 0);
-
-        assert_eq!(buffer.data[6], 0);
-        assert_eq!(buffer.data[7], 0);
-        assert_eq!(buffer.data[8], 0);
-        assert_eq!(buffer.data[9], 0);
-        assert_eq!(buffer.data[10], 0);
-        assert_eq!(buffer.data[11], 0);
-
-        assert_eq!(buffer.data[12], 255);
-        assert_eq!(buffer.data[13], 64);
-        assert_eq!(buffer.data[14], 0);
-        assert_eq!(buffer.data[15], 255);
-        assert_eq!(buffer.data[16], 64);
-        assert_eq!(buffer.data[17], 0);
-
-        assert_eq!(buffer.data[18], 0);
-        assert_eq!(buffer.data[19], 0);
-        assert_eq!(buffer.data[20], 0);
-        assert_eq!(buffer.data[21], 0);
-        assert_eq!(buffer.data[22], 0);
-        assert_eq!(buffer.data[23], 0);
-    }
-
-    #[test]
-    fn iter_rgb_buffer() {
-        let color = DigitalRGBColor{ r: 255, g: 64, b: 0 };
-        let buffer = RGBPixelBuffer::new_with_background(2, 2, None, color);
-
-        for pixel in buffer {
-            assert_eq!(pixel.2, color);
+        for y in 0..2 {
+            for x in 0..2 {
+                assert_eq!(buffer.data[x * 3 + y * 12 + 0], 255, "x: {}, y: {}", x, y);
+                assert_eq!(buffer.data[x * 3 + y * 12 + 1], 64, "x: {}, y: {}", x, y);
+                assert_eq!(buffer.data[x * 3 + y * 12 + 2], 0, "x: {}, y: {}", x, y);
+            }
+            for p in 6..12 {
+                assert_eq!(buffer.data[p + y * 12], 0);
+            }
         }
     }
 
@@ -270,7 +183,7 @@ mod tests {
         assert_eq!(buffer.data[10], 0);
         assert_eq!(buffer.data[11], 0);
         
-        match buffer.set_pixel(1, 1, DigitalRGBColor{ r: 255, g: 64, b: 0 }) {
+        match buffer.set_pixel(1, 1, DigitalRGBAColor{ r: 255, g: 64, b: 0, a: 255 }.into()) {
             Err(_error) => assert!(false),
             _ => assert!(true)
         }
