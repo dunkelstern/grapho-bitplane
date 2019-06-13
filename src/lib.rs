@@ -131,5 +131,6 @@ pub mod rgb;
 pub mod rgba;
 pub mod bgr;
 pub mod bgra;
+pub mod y800;
 
 pub mod conversion;
