@@ -2,14 +2,23 @@
 //! It will contain color conversion functionality and can work on arbitrary interleaved or non-interleaved
 //! graphics data.
 //! 
+//! Conversion from all color-plane types into all others will be implemented.
 //! Currently the following bitplane types are implemented:
+//! 
+//! ## RGB
 //! 
 //! - `RGB` interleaved with stride
 //! - `BGR` interleaved with stride
 //! - `RGBA` interleaved with stride
 //! - `BGRA` interleaved with stride
 //! 
-//! Conversion from all color-plane types into all others will be implemented.
+//! # Grayscale
+//! 
+//! - `Y800` Simple, single Y plane for monochrome images.
+//! 
+//! # YCbCr/YUV
+//! 
+//! - `UYVY` YUV 4:2:2 (Y sample at every pixel, U and V sampled at every second pixel horizontally on each line). A macropixel contains 2 pixels in 1 `u32`.
 
 
 #![feature(repeat_generic_slice)]
@@ -132,5 +141,6 @@ pub mod rgba;
 pub mod bgr;
 pub mod bgra;
 pub mod y800;
+pub mod uyvy;
 
 pub mod conversion;

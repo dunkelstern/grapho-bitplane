@@ -23,28 +23,41 @@ use crate::bgr::BGRPixelBuffer;
 use crate::rgba::RGBAPixelBuffer;
 use crate::bgra::BGRAPixelBuffer;
 use crate::y800::Y800PixelBuffer;
+use crate::uyvy::UYVYPixelBuffer;
+
 
 conversion!(RGBPixelBuffer, BGRPixelBuffer);
 conversion!(RGBPixelBuffer, RGBAPixelBuffer);
 conversion!(RGBPixelBuffer, BGRAPixelBuffer);
 conversion!(RGBPixelBuffer, Y800PixelBuffer);
+conversion!(RGBPixelBuffer, UYVYPixelBuffer);
 
 conversion!(BGRPixelBuffer, RGBPixelBuffer);
 conversion!(BGRPixelBuffer, RGBAPixelBuffer);
 conversion!(BGRPixelBuffer, BGRAPixelBuffer);
 conversion!(BGRPixelBuffer, Y800PixelBuffer);
+conversion!(BGRPixelBuffer, UYVYPixelBuffer);
 
 conversion!(RGBAPixelBuffer, RGBPixelBuffer);
 conversion!(RGBAPixelBuffer, BGRPixelBuffer);
 conversion!(RGBAPixelBuffer, BGRAPixelBuffer);
 conversion!(RGBAPixelBuffer, Y800PixelBuffer);
+conversion!(RGBAPixelBuffer, UYVYPixelBuffer);
 
 conversion!(BGRAPixelBuffer, RGBPixelBuffer);
 conversion!(BGRAPixelBuffer, BGRPixelBuffer);
 conversion!(BGRAPixelBuffer, RGBAPixelBuffer);
 conversion!(BGRAPixelBuffer, Y800PixelBuffer);
+conversion!(BGRAPixelBuffer, UYVYPixelBuffer);
 
 conversion!(Y800PixelBuffer, RGBPixelBuffer);
 conversion!(Y800PixelBuffer, BGRPixelBuffer);
 conversion!(Y800PixelBuffer, RGBAPixelBuffer);
 conversion!(Y800PixelBuffer, BGRAPixelBuffer);
+conversion!(Y800PixelBuffer, UYVYPixelBuffer);
+
+conversion!(UYVYPixelBuffer, RGBPixelBuffer);
+conversion!(UYVYPixelBuffer, BGRPixelBuffer);
+conversion!(UYVYPixelBuffer, RGBAPixelBuffer);
+conversion!(UYVYPixelBuffer, BGRAPixelBuffer);
+conversion!(UYVYPixelBuffer, Y800PixelBuffer);
