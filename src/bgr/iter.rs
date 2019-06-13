@@ -65,7 +65,7 @@ mod tests {
     use grapho_color::DigitalRGBColor;
 
     #[test]
-    fn iter_rgb_buffer() {
+    fn iter_buffer() {
         let color = DigitalRGBColor{ r: 255, g: 64, b: 0 };
         let buffer = BGRPixelBuffer::new_with_background(2, 2, None, color);
 

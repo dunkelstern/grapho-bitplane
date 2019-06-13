@@ -108,7 +108,7 @@ mod tests {
     use grapho_color::DigitalYCbCrColor;
 
     #[test]
-    fn empty_y800_buffer() {
+    fn empty_buffer() {
         let buffer = Y800PixelBuffer::new(2, 2, None);
         assert_eq!(buffer.data.len(), 4);
         assert_eq!(buffer.data[0], 0);
@@ -121,7 +121,7 @@ mod tests {
     }
 
     #[test]
-    fn prefilled_y800_buffer() {
+    fn prefilled_buffer() {
         let data = vec![0, 255, 64, 0];
         let copy = data.clone();
         let buffer = Y800PixelBuffer::new_with_data(2, 2, None, data).unwrap();
@@ -132,7 +132,7 @@ mod tests {
     }
 
     #[test]
-    fn bg_y800_buffer() {
+    fn bg_buffer() {
         let buffer = Y800PixelBuffer::new_with_background(
             2, 2, None,
             DigitalYCbCrColor{ y: 255, cb: 0, cr: 0 }
@@ -144,7 +144,7 @@ mod tests {
     }
     
     #[test]
-    fn bg_y800_buffer_stride() {
+    fn bg_buffer_stride() {
         let buffer = Y800PixelBuffer::new_with_background(
             2, 2, Some(4),
             DigitalYCbCrColor{ y: 255, cb: 0, cr: 0 }
@@ -162,7 +162,7 @@ mod tests {
     }
 
     #[test]
-    fn set_pixel_y800_buffer() {
+    fn set_pixel() {
         let mut buffer = Y800PixelBuffer::new(2, 2, None);
         assert_eq!(buffer.data[3], 0);
         
@@ -180,7 +180,7 @@ mod tests {
     }
 
     #[test]
-    fn get_pixel_y800_buffer() {
+    fn get_pixel() {
         let data = vec![1, 2, 0, 0, 3, 4, 0, 0];
         let buffer = Y800PixelBuffer::new_with_data(2, 2, Some(4), data).unwrap();
 

@@ -63,7 +63,7 @@ mod tests {
     use grapho_color::DigitalYCbCrColor;
 
     #[test]
-    fn iter_y800_buffer() {
+    fn iter_buffer() {
         let color = DigitalYCbCrColor{ y: 255, cb: 0, cr: 0 };
         let buffer = Y800PixelBuffer::new_with_background(2, 2, None, color);
 

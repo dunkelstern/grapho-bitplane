@@ -117,7 +117,7 @@ mod tests {
     use grapho_color::DigitalRGBAColor;
 
     #[test]
-    fn empty_rgb_buffer() {
+    fn empty_buffer() {
         let buffer = RGBPixelBuffer::new(2, 2, None);
         assert_eq!(buffer.data.len(), 12);
         assert_eq!(buffer.data[0], 0);
@@ -132,7 +132,7 @@ mod tests {
     }
 
     #[test]
-    fn prefilled_rgb_buffer() {
+    fn prefilled_buffer() {
         let data = vec![0, 255, 64, 0, 255, 64, 0, 255, 64, 0, 255, 64];
         let copy = data.clone();
         let buffer = RGBPixelBuffer::new_with_data(2, 2, None, data).unwrap();
@@ -143,7 +143,7 @@ mod tests {
     }
 
     #[test]
-    fn bg_rgb_buffer() {
+    fn bg_buffer() {
         let buffer = RGBPixelBuffer::new_with_background(
             2, 2, None,
             DigitalRGBColor{ r: 255, g: 64, b: 0 }
@@ -157,7 +157,7 @@ mod tests {
     }
     
     #[test]
-    fn bg_rgb_buffer_stride() {
+    fn bg_buffer_stride() {
         let buffer = RGBPixelBuffer::new_with_background(
             2, 2, Some(12),
             DigitalRGBColor{ r: 255, g: 64, b: 0 }
@@ -177,7 +177,7 @@ mod tests {
     }
 
     #[test]
-    fn set_pixel_rgb_buffer() {
+    fn set_pixel() {
         let mut buffer = RGBPixelBuffer::new(2, 2, None);
         assert_eq!(buffer.data[9], 0);
         assert_eq!(buffer.data[10], 0);
@@ -199,7 +199,7 @@ mod tests {
     }
 
     #[test]
-    fn get_pixel_rgb_buffer() {
+    fn get_pixel() {
         let data = vec![0, 1, 2, 3, 4, 5, 0, 0, 6, 7, 8, 9, 10, 11, 0, 0];
         let buffer = RGBPixelBuffer::new_with_data(2, 2, Some(8), data).unwrap();
 

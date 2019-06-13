@@ -66,7 +66,7 @@ mod tests {
 
 
     #[test]
-    fn iter_bgra_buffer() {
+    fn iter_buffer() {
         let color = DigitalRGBAColor{ r: 255, g: 64, b: 0, a: 255 };
         let buffer = BGRAPixelBuffer::new_with_background(2, 2, None, color);
 
