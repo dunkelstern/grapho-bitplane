@@ -47,10 +47,10 @@ impl<'a> PixelBuffer<'a> for GrayscalePixelBuffer<'a> {
     /// 
     /// # Defined fourcc codes
     /// 
-    /// * 'Y', tightly packed grayscale only image
-    /// * 'Yxx', grayscale image with 2 bytes of padding (to interpret a YUV444 image as grayscale)
+    /// * `Y`, tightly packed grayscale only image
+    /// * `Yxx`, grayscale image with 2 bytes of padding (to interpret a YUV444 image as grayscale)
     /// * `Yx`, grayscale image with 1 byte of padding (to interpret a YUV422 interleaved image as grayscale)
-    /// * 'xY', like `Yx` but inverted order
+    /// * `xY`, like `Yx` but inverted order
     /// 
     /// # Returns
     /// 
@@ -83,10 +83,10 @@ impl<'a> PixelBuffer<'a> for GrayscalePixelBuffer<'a> {
     /// 
     /// # Defined fourcc codes
     /// 
-    /// * 'Y', tightly packed grayscale only image
-    /// * 'Yxx', grayscale image with 2 bytes of padding (to interpret a YUV444 image as grayscale)
+    /// * `Y`, tightly packed grayscale only image
+    /// * `Yxx`, grayscale image with 2 bytes of padding (to interpret a YUV444 image as grayscale)
     /// * `Yx`, grayscale image with 1 byte of padding (to interpret a YUV422 interleaved image as grayscale)
-    /// * 'xY', like `Yx` but inverted order
+    /// * `xY`, like `Yx` but inverted order
     /// 
     /// # Returns
     /// 
@@ -127,10 +127,10 @@ impl<'a> PixelBuffer<'a> for GrayscalePixelBuffer<'a> {
     /// 
     /// # Defined fourcc codes
     /// 
-    /// * 'Y', tightly packed grayscale only image (default)
-    /// * 'Yxx', grayscale image with 2 bytes of padding (to interpret a YUV444 image as grayscale)
+    /// * `Y`, tightly packed grayscale only image (default)
+    /// * `Yxx`, grayscale image with 2 bytes of padding (to interpret a YUV444 image as grayscale)
     /// * `Yx`, grayscale image with 1 byte of padding (to interpret a YUV422 interleaved image as grayscale)
-    /// * 'xY', like `Yx` but inverted order
+    /// * `xY`, like `Yx` but inverted order
     /// 
     /// # Returns
     /// 
