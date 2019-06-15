@@ -1,6 +1,4 @@
 //! This module describes an interleaved RGB pixel buffer
-//!
-//! In memory representation is (one byte each): R, G, B, R, G, B, ...
 
 use crate::*;
 pub use grapho_color::DigitalRGBAColor;
@@ -104,14 +102,14 @@ impl<'a> PixelBuffer<'a> for RGBPixelBuffer<'a> {
     /// or `PixelBufferError::BufferTooSmall` if the buffer is too small for
     /// the requested dimensions
     fn new_with_data(width: usize, height: usize, data: Vec<u8>, stride: Option<usize>, fourcc: Option<&'a str>) -> Result<Self, PixelBufferError> {
-
-        if data.len() < stride.unwrap_or(width * 3) * height {
-            return Err(PixelBufferError::BufferTooSmall);
-        }
-
         let f = fourcc.unwrap_or("RGB");
         let component_order = RGBPixelBuffer::decode_component_order(f);
 
+        if data.len() < stride.unwrap_or(width * component_order.len()) * height {
+            return Err(PixelBufferError::BufferTooSmall);
+        }
+
+ 
         Ok(
             RGBPixelBuffer {
                 width,
