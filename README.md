@@ -28,8 +28,8 @@ Currently the following bitplane types are implemented:
 ### Grayscale `GrayscalePixelBuffer`
 
 - `Y` Simple, single Y plane for monochrome images.
-- 'Yxx' 3 bytes, ignore the last two (interpret a YUV444 image as grayscale)
-- 'Yx' and 'xY', 2 bytes, ignore the x (interpret a YUV422 image as grayscale)
+- `Yxx` 3 bytes, ignore the last two (interpret a YUV444 image as grayscale)
+- `Yx` and `xY`, 2 bytes, ignore the x (interpret a YUV422 image as grayscale)
 
 ### YUV `YUV422iPixelBuffer`
 
