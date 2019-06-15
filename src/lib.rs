@@ -146,6 +146,6 @@ pub trait PixelBuffer<'a>: Sized + IntoIterator
 
 pub mod rgb;
 pub mod grayscale;
-pub mod yuv_interleaved;
+pub mod yuv422i;
 
 pub mod conversion;

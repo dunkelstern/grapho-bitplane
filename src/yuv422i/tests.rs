@@ -2,7 +2,7 @@
 // Tests
 //
 pub use crate::{ PixelBuffer, PixelBufferError };
-pub use crate::yuv_interleaved::YUV422iPixelBuffer;
+pub use crate::yuv422i::YUV422iPixelBuffer;
 pub use grapho_color::DigitalYCbCrColor;
 
 #[cfg(test)]

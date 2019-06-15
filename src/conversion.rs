@@ -20,7 +20,7 @@ macro_rules! conversion {
 
 use crate::rgb::RGBPixelBuffer;
 use crate::grayscale::GrayscalePixelBuffer;
-use crate::yuv_interleaved::YUV422iPixelBuffer;
+use crate::yuv422i::YUV422iPixelBuffer;
 
 
 conversion!(RGBPixelBuffer<'_>, GrayscalePixelBuffer<'_>);
