@@ -5,21 +5,23 @@
 //! Conversion from all color-plane types into all others will be implemented.
 //! Currently the following bitplane types are implemented:
 //! 
-//! ## RGB
-//! 
-//! - `RGB` interleaved with stride
-//! - `BGR` interleaved with stride
-//! - `RGBA` interleaved with stride
-//! - `BGRA` interleaved with stride
-//! 
-//! # Grayscale
-//! 
-//! - `Y800` Simple, single Y plane for monochrome images.
-//! 
-//! # YCbCr/YUV
-//! 
+//! ### RGB interleaved `RGBPixelBuffer`
+//!
+//! - `RGB`, `BGR` 24 bit without alpha
+//! - `RGBA`, `ARGB`, `BGRA`, `ABGR` 32 bit with alpha
+//!
+//! ### Grayscale `GrayscalePixelBuffer`
+//!
+//! - `Y` Simple, single Y plane for monochrome images.
+//! - 'Yxx' 3 bytes, ignore the last two (interpret a YUV444 image as grayscale)
+//! - 'Yx' and 'xY', 2 bytes, ignore the x (interpret a YUV422 image as grayscale)
+//!
+//! ### YUV `YUV422iPixelBuffer`
+//!
 //! - `UYVY` YUV 4:2:2 (Y sample at every pixel, U and V sampled at every second pixel horizontally on each line). A macropixel contains 2 pixels in 1 `u32`.
-
+//! - `YUY2`/`YUV422` YUV 4:2:2 as for `UYVY` but with different component ordering within the `u32` macropixel.
+//! - `YVYU` YUV 4:2:2 as for `UYVY` but with different component ordering within the `u32` macropixel.
+//! - `VYUY` YUV 4:2:2 as for `UYVY` but with different component ordering within the `u32` macropixel.
 
 #![feature(repeat_generic_slice)]
 #![feature(doc_spotlight)]
@@ -44,7 +46,7 @@ pub type Pixel<T> = (usize, usize, T);
 
 #[doc(spotlight)]
 /// Pixel buffer trait, all Pixel buffers will implement this
-pub trait PixelBuffer: Sized + IntoIterator
+pub trait PixelBuffer<'a>: Sized + IntoIterator
     // + Sub + Mul + Add + Div + SubAssign + MulAssign + AddAssign + DivAssign
 {
     /// The color type this pixel buffer contains
@@ -58,11 +60,12 @@ pub trait PixelBuffer: Sized + IntoIterator
     /// * `height` - The height of the buffer
     /// * `stride` - optional, the line-width of the buffer if it differs from the
     ///   default: `<length of color type representation> * width`
+    /// * `fourcc` - optional, data representation format
     /// 
     /// # Returns
     /// 
     /// This returns a new instance of `Self` with it's contents set to zero
-    fn new(width: usize, height: usize, stride: Option<usize>) -> Self;
+    fn new(width: usize, height: usize, stride: Option<usize>, fourcc: Option<&'a str>) -> Self;
 
     /// Create a new pixel buffer with given dimensions from a `Vec<u8>`
     /// 
@@ -72,6 +75,7 @@ pub trait PixelBuffer: Sized + IntoIterator
     /// * `height` - The height of the buffer
     /// * `stride` - optional, the line-width of the buffer if it differs from the
     ///   default: `<length of color type representation> * width`
+    /// * `fourcc` - optional, data representation format
     /// * `data` - the data to consume
     /// 
     /// # Returns
@@ -79,7 +83,7 @@ pub trait PixelBuffer: Sized + IntoIterator
     /// This returns a `Result` with either a new instance of `Self`
     /// or `PixelBufferError::BufferTooSmall` if the buffer is too small for
     /// the requested dimensions
-    fn new_with_data(width: usize, height: usize, stride: Option<usize>, data: Vec<u8>) -> Result<Self, PixelBufferError>;
+    fn new_with_data(width: usize, height: usize, data: Vec<u8>, stride: Option<usize>, fourcc: Option<&'a str>) -> Result<Self, PixelBufferError>;
     
     /// Create a new pixel buffer with given dimensions and fill color
     /// 
@@ -89,6 +93,7 @@ pub trait PixelBuffer: Sized + IntoIterator
     /// * `height` - The height of the buffer
     /// * `stride` - optional, the line-width of the buffer if it differs from the
     ///   default: `<length of color type representation> * width`
+    /// * `fourcc` - optional, data representation format
     /// * `color` - fill color to use
     /// 
     /// # Returns
@@ -96,7 +101,7 @@ pub trait PixelBuffer: Sized + IntoIterator
     /// This returns a new instance of `Self` with it's contents set to the
     /// defined color. If stride is bigger than needed width the padding is filled with
     /// zeroes.
-    fn new_with_background(width: usize, height: usize, stride: Option<usize>, color: Self::ColorType) -> Self;
+    fn new_with_background(width: usize, height: usize, color: Self::ColorType, stride: Option<usize>, fourcc: Option<&'a str>) -> Self;
     
     /// width of the buffer
     fn get_width(&self) -> usize;
@@ -106,6 +111,9 @@ pub trait PixelBuffer: Sized + IntoIterator
 
     /// stride of the buffer
     fn get_stride(&self) -> usize;
+
+    /// fourcc code of the buffer
+    fn get_fourcc(&self) -> &'a str;
 
     /// Set a pixel to a color
     /// 
@@ -137,10 +145,7 @@ pub trait PixelBuffer: Sized + IntoIterator
 }
 
 pub mod rgb;
-pub mod rgba;
-pub mod bgr;
-pub mod bgra;
-pub mod y800;
-pub mod uyvy;
+pub mod grayscale;
+pub mod yuv_interleaved;
 
 pub mod conversion;

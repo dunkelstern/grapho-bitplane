@@ -1,44 +1,39 @@
-//! This module describes an interleaved RGB pixel buffer
-//!
-//! In memory representation is (one byte each): R, G, B, R, G, B, ...
+//! This module describes an interleaved single component grayscale buffer
 
 use crate::*;
-pub use grapho_color::DigitalRGBAColor;
+pub use grapho_color::DigitalGrayscaleColor;
 
 #[derive(Debug, PartialEq, Clone, Copy)]
-pub enum RGBComponent {
-    Red   = 0,
-    Green = 1,
-    Blue  = 2,
-    Alpha = 3
+pub enum GrayscaleComponent {
+    Value = 0,
+    Ignore = 1
 }
 
-/// RGB Pixel buffer without alpha channel
+/// Grayscale Pixel buffer without alpha channel
 #[derive(Debug, PartialEq)]
-pub struct RGBPixelBuffer<'a> {
+pub struct GrayscalePixelBuffer<'a> {
     width: usize,
     height: usize,
     stride: usize,
     fourcc: &'a str,
-    component_order: Vec<RGBComponent>,
+    component_order: Vec<GrayscaleComponent>,
     data: Vec<u8>
 }
 
-impl<'a> RGBPixelBuffer<'a> {
-    fn decode_component_order(fourcc:&'a str) -> Vec<RGBComponent> {
+impl<'a> GrayscalePixelBuffer<'a> {
+    fn decode_component_order(fourcc:&'a str) -> Vec<GrayscaleComponent> {
         match fourcc {
-            "BGR" => vec![RGBComponent::Blue, RGBComponent::Green, RGBComponent::Red],
-            "RGBA" => vec![RGBComponent::Red, RGBComponent::Green, RGBComponent::Blue, RGBComponent::Alpha],
-            "BGRA" => vec![RGBComponent::Blue, RGBComponent::Green, RGBComponent::Red, RGBComponent::Alpha],
-            "ARGB" => vec![RGBComponent::Alpha, RGBComponent::Red, RGBComponent::Green, RGBComponent::Blue],
-            "ABGR" => vec![RGBComponent::Alpha, RGBComponent::Blue, RGBComponent::Green, RGBComponent::Red],
-            "RGB" | _ => vec![RGBComponent::Red, RGBComponent::Green, RGBComponent::Blue],
+            "Y" => vec![GrayscaleComponent::Value],
+            "Yxx" => vec![GrayscaleComponent::Value, GrayscaleComponent::Ignore, GrayscaleComponent::Ignore],
+            "Yx" => vec![GrayscaleComponent::Value, GrayscaleComponent::Ignore],
+            "xY" => vec![GrayscaleComponent::Ignore, GrayscaleComponent::Value],
+            _ => vec![GrayscaleComponent::Value]
         }       
     }
 }
 
-impl<'a> PixelBuffer<'a> for RGBPixelBuffer<'a> {
-    type ColorType = DigitalRGBAColor;
+impl<'a> PixelBuffer<'a> for GrayscalePixelBuffer<'a> {
+    type ColorType = DigitalGrayscaleColor;
 
     /// Create a new pixel buffer with given dimensions
     /// 
@@ -52,29 +47,26 @@ impl<'a> PixelBuffer<'a> for RGBPixelBuffer<'a> {
     /// 
     /// # Defined fourcc codes
     /// 
-    /// * `RGB`
-    /// * `BGR`
-    /// * `RGBA`
-    /// * `ARGB`
-    /// * `BGRA`
-    /// * `ABGR`
+    /// * 'Y', tightly packed grayscale only image
+    /// * 'Yxx', grayscale image with 2 bytes of padding (to interpret a YUV444 image as grayscale)
+    /// * `Yx`, grayscale image with 1 byte of padding (to interpret a YUV422 interleaved image as grayscale)
+    /// * 'xY', like `Yx` but inverted order
     /// 
     /// # Returns
     /// 
-    /// This returns a new instance of `RGBPixelBuffer` with it's contents set to zero
-
+    /// This returns a new instance of `GrayscalePixelBuffer` with it's contents set to zero
     fn new(width: usize, height: usize, stride: Option<usize>, fourcc: Option<&'a str>) -> Self {
-        let f = fourcc.unwrap_or("RGB");
-        let component_order = RGBPixelBuffer::decode_component_order(f);
+        let f = fourcc.unwrap_or("Y");
+        let component_order = GrayscalePixelBuffer::decode_component_order(f);
         let line_width = stride.unwrap_or(width * component_order.len());
 
-        RGBPixelBuffer {
+        GrayscalePixelBuffer {
             width,
             height,
-            data: vec![0; line_width * height],
             stride: line_width,
             fourcc: f,
-            component_order
+            component_order,
+            data: vec![0; line_width * height]
         }
     }
 
@@ -91,33 +83,31 @@ impl<'a> PixelBuffer<'a> for RGBPixelBuffer<'a> {
     /// 
     /// # Defined fourcc codes
     /// 
-    /// * `RGB`
-    /// * `BGR`
-    /// * `RGBA`
-    /// * `ARGB`
-    /// * `BGRA`
-    /// * `ABGR`
+    /// * 'Y', tightly packed grayscale only image
+    /// * 'Yxx', grayscale image with 2 bytes of padding (to interpret a YUV444 image as grayscale)
+    /// * `Yx`, grayscale image with 1 byte of padding (to interpret a YUV422 interleaved image as grayscale)
+    /// * 'xY', like `Yx` but inverted order
     /// 
     /// # Returns
     /// 
-    /// This returns a `Result` with either a new instance of `RGBPixelBuffer`
+    /// This returns a `Result` with either a new instance of `GrayscalePixelBuffer`
     /// or `PixelBufferError::BufferTooSmall` if the buffer is too small for
     /// the requested dimensions
     fn new_with_data(width: usize, height: usize, data: Vec<u8>, stride: Option<usize>, fourcc: Option<&'a str>) -> Result<Self, PixelBufferError> {
 
-        if data.len() < stride.unwrap_or(width * 3) * height {
+        if data.len() < stride.unwrap_or(width) * height {
             return Err(PixelBufferError::BufferTooSmall);
         }
-
-        let f = fourcc.unwrap_or("RGB");
-        let component_order = RGBPixelBuffer::decode_component_order(f);
+        
+        let f = fourcc.unwrap_or("Y");
+        let component_order = GrayscalePixelBuffer::decode_component_order(f);
 
         Ok(
-            RGBPixelBuffer {
+            GrayscalePixelBuffer {
                 width,
                 height,
+                stride: stride.unwrap_or(width),
                 data,
-                stride: stride.unwrap_or(width * component_order.len()),
                 fourcc: f,
                 component_order
            }
@@ -137,54 +127,43 @@ impl<'a> PixelBuffer<'a> for RGBPixelBuffer<'a> {
     /// 
     /// # Defined fourcc codes
     /// 
-    /// * `RGB` (default)
-    /// * `BGR`
-    /// * `RGBA`
-    /// * `ARGB`
-    /// * `BGRA`
-    /// * `ABGR`
+    /// * 'Y', tightly packed grayscale only image (default)
+    /// * 'Yxx', grayscale image with 2 bytes of padding (to interpret a YUV444 image as grayscale)
+    /// * `Yx`, grayscale image with 1 byte of padding (to interpret a YUV422 interleaved image as grayscale)
+    /// * 'xY', like `Yx` but inverted order
     /// 
     /// # Returns
     /// 
-    /// This returns a new instance of `RGBPixelBuffer` with it's contents set to the
+    /// This returns a new instance of `GrayscalePixelBuffer` with it's contents set to the
     /// defined color. If stride is bigger than needed width the padding is filled with
     /// zeroes.
     fn new_with_background(width: usize, height: usize, color: Self::ColorType, stride: Option<usize>, fourcc: Option<&'a str>) -> Self {
-        let f = fourcc.unwrap_or("RGB");
-        let component_order = RGBPixelBuffer::decode_component_order(f);
-        let rep: [u8; 4] = color.into();
+        let f = fourcc.unwrap_or("Y");
+        let component_order = GrayscalePixelBuffer::decode_component_order(f);
         let line_width = stride.unwrap_or(width * component_order.len());
         let data:Vec<u8>;
 
-        let representation =
-            if component_order.len() == 3 {
-                vec![
-                    rep[component_order[0] as usize],
-                    rep[component_order[1] as usize],
-                    rep[component_order[2] as usize],
-                ]
-            } else {
-                vec![
-                    rep[component_order[0] as usize],
-                    rep[component_order[1] as usize],
-                    rep[component_order[2] as usize],
-                    rep[component_order[3] as usize],
-                ]
-            };
-
-        if line_width > width * component_order.len() {
+        let mut representation:Vec<u8> = vec![0; component_order.len()];
+        for i in 0..component_order.len() {
+            representation[i] =
+                match component_order[i] {
+                    GrayscaleComponent::Value => color.v,
+                    GrayscaleComponent::Ignore => 0u8
+                };
+        }
+        if line_width > width {
             let mut line = representation.repeat(width);
             line.extend([0].repeat(line_width - width * component_order.len()));
             data = line.repeat(height);
         } else {
-            data = representation.repeat(width * height);
+             data = representation.repeat(width * height);
         }  
          
-        RGBPixelBuffer {
+        GrayscalePixelBuffer {
             width,
             height,
-            data,
             stride: line_width,
+            data,
             fourcc: f,
             component_order
         }
@@ -212,12 +191,13 @@ impl<'a> PixelBuffer<'a> for RGBPixelBuffer<'a> {
         }
 
         let start = x * self.component_order.len() + y * self.stride;
-        let repr: [u8; 4] = color.into();
-
         for i in 0..self.component_order.len() {
-            self.data[start + i] = repr[self.component_order[i] as usize];
+            match self.component_order[i] {
+                GrayscaleComponent::Value => self.data[start + i] = color.v,
+                GrayscaleComponent::Ignore => ()
+            }
         }
- 
+
         Ok(())
     }
 
@@ -226,13 +206,18 @@ impl<'a> PixelBuffer<'a> for RGBPixelBuffer<'a> {
             return Err(PixelBufferError::RequestOutOfBounds);
         }
 
-        let start = x * self.component_order.len() + y * self.stride;
-        let mut color: [u8; 4] = [0, 0, 0, 255];
+        let mut color = DigitalGrayscaleColor { v: 0 };
+        let start = x + y * self.stride;
         for i in 0..self.component_order.len() {
-            color[self.component_order[i] as usize] = self.data[start + i];
+            match self.component_order[i] {
+                GrayscaleComponent::Value => {
+                    color = DigitalGrayscaleColor::from(self.data[start + i]);
+                }
+                GrayscaleComponent::Ignore => ()
+            }
         }
         
-        Ok(DigitalRGBAColor::from(color))
+        Ok(color)
     }
 }
 

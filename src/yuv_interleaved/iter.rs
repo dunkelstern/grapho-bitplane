@@ -1,22 +1,22 @@
-//! Create iterator for RGBPixelBuffer
+//! Create iterator for YUV422iPixelBuffer
 
 use crate::{ Pixel, PixelBuffer };
-use super::RGBPixelBuffer;
-use grapho_color::DigitalRGBAColor;
+use super::YUV422iPixelBuffer;
+use grapho_color::DigitalYCbCrColor;
 
 
-/// Pixel iterator for `RGBPixelBuffer`
+/// Pixel iterator for `YUV422iPixelBuffer`
 /// 
-/// Items it will generate are of type `Pixel<DigitalRGBColor>`
+/// Items it will generate are of type `Pixel<DigitalCrCbColor>`
 #[derive(Debug, PartialEq)]
-pub struct RGBPixelIterator<'a> {
-    base: RGBPixelBuffer<'a>,
+pub struct YUV422iPixelIterator<'a> {
+    base: YUV422iPixelBuffer<'a>,
     x: usize,
     y: usize
 }
 
-impl<'a> Iterator for RGBPixelIterator<'a> {
-    type Item = Pixel<DigitalRGBAColor>;
+impl<'a> Iterator for YUV422iPixelIterator<'a> {
+    type Item = Pixel<DigitalYCbCrColor>;
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.y >= self.base.height {
@@ -24,6 +24,7 @@ impl<'a> Iterator for RGBPixelIterator<'a> {
         }
 
         let color = self.base.get_pixel(self.x, self.y).unwrap();
+
         self.x += 1;
         if self.x >= self.base.width {
             self.x = 0;
@@ -38,12 +39,12 @@ impl<'a> Iterator for RGBPixelIterator<'a> {
     }
 }
 
-impl<'a> IntoIterator for RGBPixelBuffer<'a> {
-    type Item = Pixel<DigitalRGBAColor>;
-    type IntoIter = RGBPixelIterator<'a>;
+impl<'a> IntoIterator for YUV422iPixelBuffer<'a> {
+    type Item = Pixel<DigitalYCbCrColor>;
+    type IntoIter = YUV422iPixelIterator<'a>;
 
     fn into_iter(self) -> Self::IntoIter {
-        RGBPixelIterator {
+        YUV422iPixelIterator {
             base: self,
             x: 0,
             y: 0

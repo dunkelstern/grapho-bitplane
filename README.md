@@ -20,28 +20,29 @@ graphics data.
 Conversion from all color-plane types into all others will be implemented.
 Currently the following bitplane types are implemented:
 
-### RGB 
+### RGB interleaved `RGBPixelBuffer`
 
-- `RGB` interleaved with stride
-- `BGR` interleaved with stride
-- `RGBA` interleaved with stride
-- `BGRA` interleaved with stride
+- `RGB`, `BGR` 24 bit without alpha
+- `RGBA`, `ARGB`, `BGRA`, `ABGR` 32 bit with alpha
 
-### Grayscale
+### Grayscale `GrayscalePixelBuffer`
 
-- `Y800` Simple, single Y plane for monochrome images.
+- `Y` Simple, single Y plane for monochrome images.
+- 'Yxx' 3 bytes, ignore the last two (interpret a YUV444 image as grayscale)
+- 'Yx' and 'xY', 2 bytes, ignore the x (interpret a YUV422 image as grayscale)
 
-### YCbCr/YUV
+### YUV `YUV422iPixelBuffer`
 
 - `UYVY` YUV 4:2:2 (Y sample at every pixel, U and V sampled at every second pixel horizontally on each line). A macropixel contains 2 pixels in 1 `u32`.
+- `YUY2`/`YUV422` YUV 4:2:2 as for `UYVY` but with different component ordering within the `u32` macropixel.
+- `YVYU` YUV 4:2:2 as for `UYVY` but with different component ordering within the `u32` macropixel.
+- `VYUY` YUV 4:2:2 as for `UYVY` but with different component ordering within the `u32` macropixel.
 
 
 ## TODO
 
 ### YCbCr/YUV
 
-- `YUY2` YUV 4:2:2 as for `UYVY` but with different component ordering within the `u32` macropixel.
-- `YVYU` YUV 4:2:2 as for `UYVY` but with different component ordering within the `u32` macropixel.
 - `I420` 8 bit Y plane followed by 8 bit 2x2 subsampled U and V planes.
 - `NV12` 8-bit Y plane followed by an interleaved U/V plane with 2x2 subsampling
 - `NV21` As NV12 with U and V reversed in the interleaved plane
