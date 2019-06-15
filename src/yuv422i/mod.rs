@@ -1,6 +1,4 @@
 //! This module describes an interleaved YUV pixel buffer with color subsampling (half horizontal resolution)
-//!
-//! In memory representation is (one byte each): U(0/1), Y0, V(0/1), Y1, ...
 
 use crate::*;
 pub use grapho_color::DigitalYCbCrColor;
@@ -154,7 +152,7 @@ impl<'a> PixelBuffer<'a> for YUV422iPixelBuffer<'a> {
     /// defined color. If stride is bigger than needed width the padding is filled with
     /// zeroes.
     fn new_with_background(width: usize, height: usize, color: Self::ColorType, stride: Option<usize>, fourcc: Option<&'a str>) -> Self {
-        let f = fourcc.unwrap_or("RGB");
+        let f = fourcc.unwrap_or("YUV422");
         let component_order = YUV422iPixelBuffer::decode_component_order(f);
         let line_width = stride.unwrap_or(width * 2);
         let data:Vec<u8>;
