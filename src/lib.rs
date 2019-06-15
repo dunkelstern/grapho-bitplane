@@ -22,6 +22,11 @@
 //! - `YUY2`/`YUV422` YUV 4:2:2 as for `UYVY` but with different component ordering within the `u32` macropixel.
 //! - `YVYU` YUV 4:2:2 as for `UYVY` but with different component ordering within the `u32` macropixel.
 //! - `VYUY` YUV 4:2:2 as for `UYVY` but with different component ordering within the `u32` macropixel.
+//!
+//! ### YUV 4:2:2 planar `YUV422pPixelBuffer`
+//! 
+//! - `YV21` / `I420` 8 bit Y plane followed by 8 bit 2x2 subsampled U and V planes.
+//! - `YV12` 8 bit Y plane followed by 8 bit 2x2 subsampled V and U planes.
 
 #![feature(repeat_generic_slice)]
 #![feature(doc_spotlight)]
@@ -148,5 +153,6 @@ pub mod rgb;
 pub mod grayscale;
 pub mod yuv422i;
 pub mod yuv444i;
+pub mod yuv422p;
 
 pub mod conversion;

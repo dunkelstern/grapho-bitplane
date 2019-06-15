@@ -31,24 +31,35 @@ Currently the following bitplane types are implemented:
 - `Yxx` 3 bytes, ignore the last two (interpret a YUV444 image as grayscale)
 - `Yx` and `xY`, 2 bytes, ignore the x (interpret a YUV422 image as grayscale)
 
-### YUV `YUV422iPixelBuffer`
+### YUV  4:2:2 interleaved `YUV422iPixelBuffer`
 
 - `UYVY` YUV 4:2:2 (Y sample at every pixel, U and V sampled at every second pixel horizontally on each line). A macropixel contains 2 pixels in 1 `u32`.
 - `YUY2`/`YUV422` YUV 4:2:2 as for `UYVY` but with different component ordering within the `u32` macropixel.
 - `YVYU` YUV 4:2:2 as for `UYVY` but with different component ordering within the `u32` macropixel.
 - `VYUY` YUV 4:2:2 as for `UYVY` but with different component ordering within the `u32` macropixel.
 
+### YUV 4:4:4 interleaved `YUV444iPixelBuffer`
+
+- `YUV` / `YUV444` YUV 4:4:4, 3 bytes per pixel, full resolution U and V planes.
+- `VUY` like `YUV` but with different component ordering
+- `UVY` like `YUV` but with different component ordering
+- `YVU` like `YUV` but with different component ordering
+
+### YUV 4:2:2 planar `YUV422pPixelBuffer`
+
+- `YV21` / `I420` 8 bit Y plane followed by 8 bit 2x2 subsampled U and V planes.
+- `YV12` 8 bit Y plane followed by 8 bit 2x2 subsampled V and U planes.
+
 ## TODO
 
-### YCbCr/YUV
+### YUV 4:2:2 planar/interleaved `YUV422piPixelBuffer`
 
-- `I420` 8 bit Y plane followed by 8 bit 2x2 subsampled U and V planes.
 - `NV12` 8-bit Y plane followed by an interleaved U/V plane with 2x2 subsampling
 - `NV21` As NV12 with U and V reversed in the interleaved plane
-- `YV12` 8 bit Y plane followed by 8 bit 2x2 subsampled V and U planes.
 
 ### YCoCg
 
-- `YCoCg` interleaved with stride
-- `YCoCgPlane` 3 planes no subsampling
-- `YCoCg422` 3 planes, Co and Cg half size subsampled
+- `YCoCg444i` interleaved with stride
+- `YCoCg444p` 3 planes no subsampling
+- `YCoCg422p` 3 planes, Co and Cg half size subsampled
+- `YCoCg422i` interleaved, Co and Cg half size subsampled

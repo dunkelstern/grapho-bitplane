@@ -22,20 +22,30 @@ use crate::rgb::RGBPixelBuffer;
 use crate::grayscale::GrayscalePixelBuffer;
 use crate::yuv422i::YUV422iPixelBuffer;
 use crate::yuv444i::YUV444iPixelBuffer;
+use crate::yuv422p::YUV422pPixelBuffer;
 
 
 conversion!(RGBPixelBuffer<'_>, GrayscalePixelBuffer<'_>);
 conversion!(RGBPixelBuffer<'_>, YUV422iPixelBuffer<'_>);
+conversion!(RGBPixelBuffer<'_>, YUV422pPixelBuffer<'_>);
 conversion!(RGBPixelBuffer<'_>, YUV444iPixelBuffer<'_>);
 
 conversion!(YUV422iPixelBuffer<'_>, RGBPixelBuffer<'_>);
 conversion!(YUV422iPixelBuffer<'_>, GrayscalePixelBuffer<'_>);
 conversion!(YUV422iPixelBuffer<'_>, YUV444iPixelBuffer<'_>);
+conversion!(YUV422iPixelBuffer<'_>, YUV422pPixelBuffer<'_>);
 
 conversion!(GrayscalePixelBuffer<'_>, RGBPixelBuffer<'_>);
 conversion!(GrayscalePixelBuffer<'_>, YUV422iPixelBuffer<'_>);
+conversion!(GrayscalePixelBuffer<'_>, YUV422pPixelBuffer<'_>);
 conversion!(GrayscalePixelBuffer<'_>, YUV444iPixelBuffer<'_>);
 
 conversion!(YUV444iPixelBuffer<'_>, RGBPixelBuffer<'_>);
 conversion!(YUV444iPixelBuffer<'_>, YUV422iPixelBuffer<'_>);
+conversion!(YUV444iPixelBuffer<'_>, YUV422pPixelBuffer<'_>);
 conversion!(YUV444iPixelBuffer<'_>, GrayscalePixelBuffer<'_>);
+
+conversion!(YUV422pPixelBuffer<'_>, RGBPixelBuffer<'_>);
+conversion!(YUV422pPixelBuffer<'_>, YUV422iPixelBuffer<'_>);
+conversion!(YUV422pPixelBuffer<'_>, YUV444iPixelBuffer<'_>);
+conversion!(YUV422pPixelBuffer<'_>, GrayscalePixelBuffer<'_>);
