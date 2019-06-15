@@ -1,4 +1,4 @@
-//! This module describes an interleaved YUV pixel buffer with color subsampling (half horizontal resolution)
+//! This module describes a planar YUV pixel buffer with color subsampling (half horizontal resolution)
 
 use crate::*;
 pub use grapho_color::DigitalYCbCrColor;
