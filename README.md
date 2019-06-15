@@ -11,7 +11,7 @@ There is also:
 - `grapho-cv`: computer vision library for grapho stack
 - `grapho-3d`: 3D vector math
 
-## What does it do?
+## What does it do
 
 `grapho-bitplane` describes the pixel buffer primitives that are used for creating and modifying images.
 It will contain color conversion functionality and can work on arbitrary interleaved or non-interleaved
@@ -37,7 +37,6 @@ Currently the following bitplane types are implemented:
 - `YUY2`/`YUV422` YUV 4:2:2 as for `UYVY` but with different component ordering within the `u32` macropixel.
 - `YVYU` YUV 4:2:2 as for `UYVY` but with different component ordering within the `u32` macropixel.
 - `VYUY` YUV 4:2:2 as for `UYVY` but with different component ordering within the `u32` macropixel.
-
 
 ## TODO
 
